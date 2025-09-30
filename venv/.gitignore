@@ -1,0 +1,18 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+# Ignore the virtual environment folder
+venv/
+
+# Ignore the SQLite database file
+status.db
+
+# Ignore Python files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore VS Code settings (optional, but good practice)
+.vscode/
+
+# Ignore files used by Gunicorn/Deployment (for future use)
+.env
+.flaskenv

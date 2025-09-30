@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Status</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; }
+        h1 { color: #333; }
+        p { margin-bottom: 20px; color: #666; }
+        .update-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h3 { margin: 0; color: #333; }
+        .buttons-group button {
+            padding: 8px 12px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .buttons-group button:hover { opacity: 0.8; }
+        .buttons-group .Green { background-color: #28a745; }
+        .buttons-group .Yellow { background-color: #ffc107; color: black; }
+        .buttons-group .Red { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>✅ Status Reporting Dashboard</h1>
+    <p>Click the button that accurately describes the current status of the area you are passing.</p>
+    
+    {% for loc in locations %}
+    <div class="update-item">
+        <h3>{{ loc.name }}</h3>
+        <div class="buttons-group">
+            <a href="{{ url_for('update_status', location_id=loc.id, color='Green') }}">
+                <button class="Green">🟢 Low/Good</button>
+            </a>
+            <a href="{{ url_for('update_status', location_id=loc.id, color='Yellow') }}">
+                <button class="Yellow">🟡 Medium/Crowded</button>
+            </a>
+            <a href="{{ url_for('update_status', location_id=loc.id, color='Red') }}">
+                <button class="Red">🔴 High/Full</button>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <p style="text-align: center; margin-top: 30px;"><a href="{{ url_for('dashboard') }}">Exit (Go to Dashboard)</a></p>
+</body>
+</html>Kalpana.py

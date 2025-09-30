@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Space Status</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 650px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; }
+        h1 { color: #333; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+        p { color: #666; }
+        .location-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            min-width: 90px;
+            text-align: center;
+        }
+        .Green { background-color: #28a745; } /* Good Availability */
+        .Yellow { background-color: #ffc107; color: black; } /* Crowded */
+        .Red { background-color: #dc3545; } /* Full */
+        .time-text { 
+            font-size: 0.8em; 
+            color: #999; 
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📚 Real-Time Study Space Status</h1>
+    <p>Check the availability before you go! Status reflects the last report.</p>
+    
+   <div id="status-container">
+    <p style="text-align: center;">Loading real-time status...</p>
+</div>
+
+<script>
+    // Function to calculate "X minutes ago"
+    function timeAgo(dateString) {
+        const now = new Date();
+        const past = new Date(dateString);
+        const seconds = Math.floor((now - past) / 1000);
+
+        if (seconds < 60) return "just now";
+        if (seconds < 3600) {
+            const minutes = Math.floor(seconds / 60);
+            return `${minutes} min ago`;
+        }
+        if (seconds < 86400) {
+            const hours = Math.floor(seconds / 3600);
+            return `${hours} hr ago`;
+        }
+        // Fallback for older updates
+        return past.toLocaleDateString(); 
+    }
+
+    function updateStatus() {
+        fetch('/api/status')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('status-container');
+                container.innerHTML = ''; 
+
+                data.forEach(loc => {
+                    const friendlyTime = timeAgo(loc.last_updated_time); // Use the new function
+
+                    const card = `
+                        <div class="location-card">
+                            <div>
+                                <h2>${loc.name}</h2>
+                                <div class="time-text">Updated: ${friendlyTime}</div>
+                            </div>
+                            <div class="status-badge ${loc.status_color}">
+                                ${loc.status_color}
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            })
+            .catch(error => console.error('Error fetching status:', error));
+    }
+
+    updateStatus(); 
+    setInterval(updateStatus, 10000); 
+</script>
+<script>
+    // Function to calculate "X min ago"
+    function timeAgo(dateString) {
+        const now = new Date();
+        // Replace the space with 'T' for reliable parsing across browsers
+        const past = new Date(dateString.replace(' ', 'T')); 
+        const seconds = Math.floor((now - past) / 1000);
+
+        if (seconds < 60) return "just now";
+        if (seconds < 3600) {
+            const minutes = Math.floor(seconds / 60);
+            return `${minutes} min ago`;
+        }
+        if (seconds < 86400) {
+            const hours = Math.floor(seconds / 3600);
+            return `${hours} hr ago`;
+        }
+        // Fallback for older updates: Month Day, Time
+        return past.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+    }
+
+    // Main function to fetch data and update the display
+    function updateStatus() {
+        fetch('/api/status') // Calls the Flask JSON endpoint
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('status-container');
+                container.innerHTML = ''; // Clear existing content
+
+                data.forEach(loc => {
+                    const friendlyTime = timeAgo(loc.last_updated_time); // Convert raw time
+
+                    // Template for the location card
+                    const card = `
+                        <div class="location-card">
+                            <div>
+                                <h2>${loc.name}</h2>
+                                <div class="time-text">Updated: ${friendlyTime}</div>
+                            </div>
+                            <div class="status-badge ${loc.status_color}">
+                                ${loc.status_color}
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            })
+            .catch(error => console.error('Error fetching status:', error));
+    }
+
+    // 1. Run immediately on page load
+    updateStatus(); 
+    // 2. Run every 10 seconds (10000 milliseconds)
+    setInterval(updateStatus, 10000); 
+</script>
+    <p style="text-align: center; margin-top: 30px;"><a href="{{ url_for('reporter_login') }}">Reporter Login</a></p>
+</body>
+</html>
