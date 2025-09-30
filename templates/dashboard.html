@@ -44,63 +44,15 @@
    <div id="status-container">
     <p style="text-align: center;">Loading real-time status...</p>
 </div>
-
-<script>
-    // Function to calculate "X minutes ago"
-    function timeAgo(dateString) {
-        const now = new Date();
-        const past = new Date(dateString);
-        const seconds = Math.floor((now - past) / 1000);
-
-        if (seconds < 60) return "just now";
-        if (seconds < 3600) {
-            const minutes = Math.floor(seconds / 60);
-            return `${minutes} min ago`;
-        }
-        if (seconds < 86400) {
-            const hours = Math.floor(seconds / 3600);
-            return `${hours} hr ago`;
-        }
-        // Fallback for older updates
-        return past.toLocaleDateString(); 
-    }
-
-    function updateStatus() {
-        fetch('/api/status')
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('status-container');
-                container.innerHTML = ''; 
-
-                data.forEach(loc => {
-                    const friendlyTime = timeAgo(loc.last_updated_time); // Use the new function
-
-                    const card = `
-                        <div class="location-card">
-                            <div>
-                                <h2>${loc.name}</h2>
-                                <div class="time-text">Updated: ${friendlyTime}</div>
-                            </div>
-                            <div class="status-badge ${loc.status_color}">
-                                ${loc.status_color}
-                            </div>
-                        </div>
-                    `;
-                    container.innerHTML += card;
-                });
-            })
-            .catch(error => console.error('Error fetching status:', error));
-    }
-
-    updateStatus(); 
-    setInterval(updateStatus, 10000); 
-</script>
 <script>
     // Function to calculate "X min ago"
     function timeAgo(dateString) {
+        if (!dateString) return "Never updated";
+
+        // Convert the raw timestamp string into a Date object
+        // Replace space with 'T' to help browsers correctly interpret the time as UTC/ISO format
+        const past = new Date(dateString.replace(' ', 'T') + 'Z'); 
         const now = new Date();
-        // Replace the space with 'T' for reliable parsing across browsers
-        const past = new Date(dateString.replace(' ', 'T')); 
         const seconds = Math.floor((now - past) / 1000);
 
         if (seconds < 60) return "just now";
@@ -115,19 +67,20 @@
         // Fallback for older updates: Month Day, Time
         return past.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' });
     }
-
-    // Main function to fetch data and update the display
+    // ... rest of the updateStatus function remains the same ...
+    // ensure loc.last_updated_time is passed to timeAgo() inside updateStatus()
+    
     function updateStatus() {
-        fetch('/api/status') // Calls the Flask JSON endpoint
+        fetch('/api/status') 
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('status-container');
-                container.innerHTML = ''; // Clear existing content
-
+                container.innerHTML = ''; 
+                
                 data.forEach(loc => {
-                    const friendlyTime = timeAgo(loc.last_updated_time); // Convert raw time
+                    // Use the updated timeAgo function with the raw string
+                    const friendlyTime = timeAgo(loc.last_updated_time); 
 
-                    // Template for the location card
                     const card = `
                         <div class="location-card">
                             <div>
@@ -145,9 +98,7 @@
             .catch(error => console.error('Error fetching status:', error));
     }
 
-    // 1. Run immediately on page load
     updateStatus(); 
-    // 2. Run every 10 seconds (10000 milliseconds)
     setInterval(updateStatus, 10000); 
 </script>
     <p style="text-align: center; margin-top: 30px;"><a href="{{ url_for('reporter_login') }}">Reporter Login</a></p>
