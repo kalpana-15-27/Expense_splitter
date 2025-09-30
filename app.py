@@ -8,17 +8,19 @@ import os # Added for environment variable access, best practice for deployment
 # --- Configuration (Define 'app' first) ---
 app = Flask(__name__) 
 
-# CRITICAL: PASTE YOUR URL HERE from Neon Console (e.g., postgres://user:pass@ep-bush-1234.cloud.neon.tech/neondb)
-NEON_DATABASE_URL = " 'postgresql://neondb_owner:npg_iZ7IEtplD2PK@ep-broad-bush-a1ff27pd-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'" 
-
+# CRITICAL: PASTE YOUR URL HERE from Neon Console (e.g., postgres://user:pass@ep-bush-1234.cloud.neon.tec)h/neondb)
+DATABASE_URL = os.environ.get('DATABASE_URL')
+db = None
+if DATABASE_URL:
 # Configure Flask-SQLAlchemy
 # Use the postgresql:// scheme for SQLAlchemy compatibility
-app.config['SQLALCHEMY_DATABASE_URI'] = NEON_DATABASE_URL
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
-app.config['SECRET_KEY'] = 'cklm' # Required for Flask-Login
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+    app.config['SECRET_KEY'] = 'cklm' # Required for Flask-Login
 
-db = SQLAlchemy(app) # Initialize SQLAlchemy
-
+    db = SQLAlchemy(app) # Initialize SQLAlchemy
+else:
+    print("WARNING:Database connection  string is not found in environment")
 REPORTER_PASSWORD = "easy" 
 
 # --- Flask-Login Configuration ---
