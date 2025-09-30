@@ -173,26 +173,6 @@ def reporter_login():
 
 
 # --- 3. Status Update Route (WRITE) ---
-@app.route('/update/<int:location_id>/<string:color>')
-def update_status(location_id, color):
-    """Updates the status of a specific location in the database."""
-    # Basic validation
-    if color not in ['Green', 'Yellow', 'Red']:
-        return "Invalid color status.", 400
-        
-    db = get_db()
-    # Get current timestamp in a format SQLite understands
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    # Update the status and timestamp for the given location ID
-    db.execute(
-        "UPDATE locations SET status_color = ?, last_updated_time = ? WHERE id = ?",
-        (color, current_time, location_id)
-    )
-    db.commit()
-    
-    # Redirect back to the reporter login page (which automatically shows the update form if the password is hardcoded)
-    return redirect(url_for('reporter_login')) 
 
 
 if __name__ == '__main__':
