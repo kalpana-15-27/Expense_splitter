@@ -152,24 +152,7 @@ def dashboard():
     return render_template('dashboard.html', locations=locations)
 
 # --- 2. Reporter Login Route ---
-@app.route('/reporter', methods=['GET', 'POST'])
-def reporter_login():
-    """Handles reporter login and displays the update form on success."""
-    if request.method == 'POST':
-        password = request.form.get('password')
-        if password == REPORTER_PASSWORD:
-            # On successful login, fetch data and render update page
-                        # --- CRITICAL FIXES FOR FLASK-LOGIN ---
-            user = Reporter()  # Create the user object
-            login_user(user)   # Log the user into the session
 
-            db = get_db()
-            locations = db.execute("SELECT * FROM locations ORDER BY id").fetchall()
-            return render_template('reporter_update.html', locations=locations)
-        else:
-            return render_template('reporter_login.html', error="Invalid Password")
-            
-    return render_template('reporter_login.html')
 
 
 # --- 3. Status Update Route (WRITE) ---
