@@ -229,15 +229,4 @@ def update_status(location_id, color):
 def logout():
     logout_user()
     return redirect(url_for('dashboard'))
-@app.route('/api/status')
-def api_status():
-    """API endpoint to return status data as JSON for AJAX updates."""
-    db = get_db()
-    locations = db.execute("SELECT * FROM locations ORDER BY id").fetchall()
-
-    # Convert sqlite row objects to a list of dictionaries for JSON
-    results = []
-    for loc in locations:
-        results.append(dict(loc))
-
-    return jsonify(results)
+    
