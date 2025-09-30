@@ -1,1 +1,1 @@
-# EXPENSE SPLITTER
+# Study space status
