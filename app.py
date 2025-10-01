@@ -101,13 +101,13 @@ def load_user(user_id):
 @app.route("/")
 def dashboard():
     # Use the Location model now that it's globally defined
-    locations = db.session.execute(db.select(db.class_map["Location"])).scalars().all()
+    locations = db.session.execute(db.select(Location)).scalars().all()
     return render_template("dashboard.html", locations=locations)
 
 
 @app.route("/api/status")
 def api_status():
-    locations = db.session.execute(db.select(db.class_map["Location"])).scalars().all()
+    locations = db.session.execute(db.select(Location)).scalars().all()
 
     results = []
     for loc in locations:
@@ -132,9 +132,7 @@ def reporter_login():
             login_user(Reporter())
 
             # Fetch locations using the correct SQLAlchemy method
-            locations = (
-                db.session.execute(db.select(db.class_map["Location"])).scalars().all()
-            )
+            locations = db.session.execute(db.select(Location)).scalars().all()
             return render_template("reporter_update.html", locations=locations)
         else:
             return render_template("reporter_login.html", error="Invalid Password")
