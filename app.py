@@ -23,6 +23,34 @@ if DATABASE_URL_RAW:
     app.config['SECRET_KEY'] = 'cklm' # Required for Flask-Login
 
     db = SQLAlchemy(app) # Initialize SQLAlchemy
+    class Location(db.Model):
+        __tablename__ = 'locations'
+        id = db.Column(db.Integer, primary_key=True)
+        name = db.Column(db.String(100), unique=True, nullable=False)
+        status_color = db.Column(db.String(10), nullable=False)
+        last_updated_time = db.Column(db.DateTime, nullable=False)
+
+# --- Initialization Function (Runs ONCE to set up table) ---
+    def init_db():
+        with app.app_context():
+        # Create the tables if they don't exist
+            db.create_all() 
+        
+        # Insert initial data ONLY if the table is empty
+            if Location.query.count() == 0:
+                initial_locations = [
+                    ("Canteen Corner Booths", "Yellow", datetime.now(timezone.utc)), 
+                    ("Canteen outside", "Green", datetime.now(timezone.utc)),
+                    ("CB benches", "Green", datetime.now(timezone.utc)),
+                    ("Ground", "Green", datetime.now(timezone.utc)),
+                    ("Library", "Green", datetime.now(timezone.utc)),
+                    ("KK Block", "Yellow", datetime.now(timezone.utc))
+            ]
+                for name, color, time in initial_locations:
+                    loc = Location(name=name, status_color=color, last_updated_time=time)
+                    db.session.add(loc)
+                db.session.commit()
+
 else:
     print("VARIABLE NOT FOUND")
 REPORTER_PASSWORD = "easy" 
@@ -43,33 +71,6 @@ def load_user(user_id):
     return None
 
 # --- Define the Database Model (The 'locations' table) ---
-class Location(db.Model):
-    __tablename__ = 'locations'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-    status_color = db.Column(db.String(10), nullable=False)
-    last_updated_time = db.Column(db.DateTime, nullable=False)
-
-# --- Initialization Function (Runs ONCE to set up table) ---
-def init_db():
-    with app.app_context():
-        # Create the tables if they don't exist
-        db.create_all() 
-        
-        # Insert initial data ONLY if the table is empty
-        if Location.query.count() == 0:
-            initial_locations = [
-                ("Canteen Corner Booths", "Yellow", datetime.now(timezone.utc)), 
-                ("Canteen outside", "Green", datetime.now(timezone.utc)),
-                ("CB benches", "Green", datetime.now(timezone.utc)),
-                ("Ground", "Green", datetime.now(timezone.utc)),
-                ("Library", "Green", datetime.now(timezone.utc)),
-                ("KK Block", "Yellow", datetime.now(timezone.utc))
-            ]
-            for name, color, time in initial_locations:
-                loc = Location(name=name, status_color=color, last_updated_time=time)
-                db.session.add(loc)
-            db.session.commit()
 
 # --- 1. Public Dashboard Route (READ) ---
 @app.route('/')
