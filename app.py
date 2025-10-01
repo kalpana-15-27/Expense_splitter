@@ -18,7 +18,7 @@ if DATABASE_URL_RAW:
     else:
         DATABASE_URL_FORMATTED = DATABASE_URL_RAW
 # Use the postgresql:// scheme for SQLAlchemy compatibility
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL_FORMATTED
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
     app.config['SECRET_KEY'] = 'cklm' # Required for Flask-Login
 
