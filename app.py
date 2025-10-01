@@ -13,6 +13,12 @@ REPORTER_PASSWORD = "easy"
 # --- 2. LAZY DATABASE INITIALIZATION ---
 # Initialize the DB object globally, but don't bind it to the app yet.
 db = SQLAlchemy() 
+class Location(db.Model):
+        __tablename__ = 'locations'
+        id = db.Column(db.Integer, primary_key=True)
+        name = db.Column(db.String(100), unique=True, nullable=False)
+        status_color = db.Column(db.String(10), nullable=False)
+        last_updated_time = db.Column(db.DateTime, nullable=False)
 
 # --- 3. DATABASE CONFIGURATION FUNCTION ---
 def configure_database(app):
@@ -37,13 +43,6 @@ def configure_database(app):
     db.init_app(app) 
     
     # After configuration, we create the model and run setup
-    class Location(db.Model):
-        __tablename__ = 'locations'
-        id = db.Column(db.Integer, primary_key=True)
-        name = db.Column(db.String(100), unique=True, nullable=False)
-        status_color = db.Column(db.String(10), nullable=False)
-        last_updated_time = db.Column(db.DateTime, nullable=False)
-
     # We must ensure all tables exist and initial data is present
     with app.app_context():
         db.create_all() 
@@ -53,6 +52,7 @@ def configure_database(app):
                 ("Canteen outside", "Green", datetime.now(timezone.utc)),
                 ("CB benches", "Green", datetime.now(timezone.utc)),
                 ("Ground", "Green", datetime.now(timezone.utc)),
+                ("Library", "Green", datetime.now(timezone.utc)),
                 ("KK Block", "Yellow", datetime.now(timezone.utc))
             ]
             for name, color, time in initial_locations:
