@@ -1,1 +1,1 @@
-web: DATABASE_URL="postgresql://neondb_owner:npg_iZ7IEtplD2PK@ep-broad-bush-a1ff27pd-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require" gunicorn app:app
+web: gunicorn app:app
