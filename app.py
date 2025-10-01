@@ -11,12 +11,12 @@ app = Flask(__name__)
 # CRITICAL: PASTE YOUR URL HERE from Neon Console (e.g., postgres://user:pass@ep-bush-1234.cloud.neon.tec)h/neondb)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
-if DATABASE_URL:
+
 # Configure Flask-SQLAlchemy
 # Use the postgresql:// scheme for SQLAlchemy compatibility
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
-    app.config['SECRET_KEY'] = 'cklm' # Required for Flask-Login
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+app.config['SECRET_KEY'] = 'cklm' # Required for Flask-Login
 
 # db = SQLAlchemy(app) # Initialize SQLAlchemy
 
