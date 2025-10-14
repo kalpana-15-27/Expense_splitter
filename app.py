@@ -139,7 +139,7 @@ def reporter_login():
 
     if current_user.is_authenticated:
         locations = (
-            db.session.execute(db.select(db.class_map["Location"])).scalars().all()
+            db.session.execute(db.select(Location)).scalars().all()
         )
         return render_template("reporter_update.html", locations=locations)
 
@@ -153,7 +153,7 @@ def update_status(location_id, color):
         return "Invalid color status.", 400
 
     # Find location by ID using the session
-    loc = db.session.get(db.class_map["Location"], location_id)
+    loc = db.session.get(Location, location_id)
 
     if loc:
         loc.status_color = color
