@@ -37,7 +37,7 @@ def configure_database(app):
     This function is run BEFORE the app starts serving requests.
     """
     # Get the URL securely from the Render environment variable
-    DATABASE_URL_RAW = os.environ.get("DATABASE_URL")
+    DATABASE_URL_RAW = "postgresql://neondb_owner:npg_iZ7IEtplD2PK@ep-broad-bush-a1ff27pd-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
     if not DATABASE_URL_RAW:
         # Halt deployment if the variable is missing
